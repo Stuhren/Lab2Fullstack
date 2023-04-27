@@ -1,0 +1,144 @@
+<head>
+<style>
+    #albums-table th, #albums-table td {
+  padding-left: 20px;
+}
+#albums-table th {
+  text-align: left;
+}
+</style>
+<form action="../api/albums" method="POST" id="album-form">
+    <input placeholder="Title" type="text" id="title" name="title">
+    <input placeholder="Artist" type="text" id="artist" name="artist">
+    <input placeholder="Year" type="number" id="year" name="year">
+    <input type="submit" value="Add Album">
+  </form>
+  <table id="albums-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Artist</th>
+        <th>Year</th>
+        <th>ID</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <p>If you have deleted or added an album, please refresh the page to see the new updated version of the album list.</p>
+</head>
+  
+  <script>
+const form = document.querySelector('#album-form');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const title = document.querySelector('#title').value;
+  const artist = document.querySelector('#artist').value;
+  const year = document.querySelector('#year').value;
+
+  const requestData = {
+    title: title,
+    artist: artist,
+    year: year,
+  };
+
+    const response = await fetch('/api/albums', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `title=${title}&artist=${artist}&year=${year}`,
+  });
+
+  const responseData = await response.json();
+  console.log(responseData);
+});
+
+const albumsTable = document.querySelector('#albums-table');
+
+fetch('/api/albums')
+    .then(response => response.json())
+    .then(data => {
+      // generate table rows for each album
+      data.forEach(album => {
+        const row = document.createElement('tr');
+        const titleCell = document.createElement('td');
+        titleCell.textContent = album.title;
+        const artistCell = document.createElement('td');
+        artistCell.textContent = album.artist;
+        const yearCell = document.createElement('td');
+        yearCell.textContent = album.year;
+        const idCell = document.createElement('td');
+        idCell.textContent = album._id;
+        row.appendChild(titleCell);
+        row.appendChild(artistCell);
+        row.appendChild(yearCell);
+        row.appendChild(idCell)
+
+        const deleteCell = document.createElement('button');
+                deleteCell.textContent = "Delete Album"
+                deleteCell.addEventListener('click', () => deleteAlbumId(album._id.toString()));
+                row.appendChild(deleteCell);
+        albumsTable.querySelector('tbody').appendChild(row);
+
+        const updateCell = document.createElement('button')
+                updateCell.textContent = "Update Album"
+                updateCell.addEventListener('click', () => updateAlbumId(album._id.toString()))
+                row.appendChild(updateCell);
+        albumsTable.querySelector('tbody').appendChild(row)
+      });
+    })
+    .catch(error => console.error(error));
+    
+
+    async function deleteAlbumId(albumId) {
+        const confirm = window.confirm("Do you want to delete this album?")
+        if(!confirm) {
+            return
+        }
+
+            try {
+                const response = await fetch('/api/albums/:id', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: albumId }),
+                });
+
+                const responseData = await response.json();
+                alert(responseData.message);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+async function updateAlbumId(albumId) {
+  const title = prompt('Enter new title:');
+  const artist = prompt('Enter new artist:');
+  const year = prompt('Enter new year:');
+
+  const requestData = {
+    title: title,
+    artist: artist,
+    year: year,
+  };
+
+  try {
+    const response = await fetch(`/api/albums/${albumId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    const responseData = await response.json();
+    alert(responseData.message);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+  </script>
