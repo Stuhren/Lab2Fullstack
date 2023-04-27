@@ -1,5 +1,5 @@
 {
-  "name": "lab1fullstack",
+  "name": "lab2fullstack",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Stuhren/Lab1FullStack.git"
+    "url": "git+https://github.com/Stuhren/Lab2Fullstack.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Stuhren/Lab1FullStack/issues"
+    "url": "https://github.com/Stuhren/Lab2Fullstack/issues"
   },
-  "homepage": "https://github.com/Stuhren/Lab1FullStack#readme",
+  "homepage": "https://github.com/Stuhren/Lab2Fullstack#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
